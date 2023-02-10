@@ -3,9 +3,9 @@ import asyncio
 from io import BytesIO
 from multiprocessing.pool import ThreadPool
 import logging
+import sys
 
 # third-party
-import sentry_sdk
 import orjson
 import pandas as pd
 import aiokafka
@@ -16,11 +16,13 @@ from models.conf import KafkaSettings
 from config import *
 from address_resolver import AddressAPI
 
-# set logger level
+# init logger
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+handler = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
 
-sentry_sdk.init(dsn=SENTRY_DSN)
 
 address_api = AddressAPI(GOOGLE_API_KEY, OPENAI_API_KEY, NER_API_KEY)
 
@@ -93,23 +95,3 @@ class AddressResolve(BaseKafkaClient):
         await self.producer.send_and_wait(KAFKA_PROCESSED_TOPIC,
                                           orjson.dumps(final_data))
         logger.info("Message Processed.")
-
-
-if __name__ == '__main__':
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    kafka_settings = KafkaSettings(
-        loop=loop,
-        client_id=CLIENT_ID,
-        bootstrap_servers=BOOTSTRAP_SERVERS,
-        max_pool_records=MAX_POOL_RECORDS,
-        message_timeout_ms=MESSAGE_TIMEOUT_MS
-    )
-
-    try:
-        server = AddressResolve(topic=KAFKA_ADDRESS_RESOLVE_TOPIC, server_settings=kafka_settings)
-        loop.run_until_complete(server.run())
-    finally:
-        loop.run_until_complete(loop.shutdown_asyncgens())
-        loop.close()

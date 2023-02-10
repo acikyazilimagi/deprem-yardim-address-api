@@ -4,7 +4,6 @@ import asyncio
 # third-party
 import logging
 import aiokafka
-import sentry_sdk
 
 # in-house
 from consumers import BaseKafkaClient
@@ -17,7 +16,6 @@ from helpers.intent import batch_query
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-sentry_sdk.init(dsn=SENTRY_DSN)
 
 class Intent(BaseKafkaClient):
 

@@ -14,4 +14,4 @@ COPY ./ /projectKafka/
 # Set the entrypoint
 ENTRYPOINT ["python"]
 # Set the default command to run the publisher and consumer
-CMD ["/projectKafka/consumers/address_resolve.py"]
+CMD ["/projectKafka/main.py"]

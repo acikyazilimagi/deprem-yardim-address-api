@@ -4,6 +4,9 @@ env = Env()
 # Read .env into os.environ
 env.read_env()
 
+# FASTAPI SETTINGS
+APP_HOST = env.str("APP_HOST", "0.0.0.0")
+APP_PORT = env.int("APP_HOST", 8000)
 
 # KAFKA SETTINGS
 CLIENT_ID = env.str("CLIENT_ID")
@@ -25,7 +28,6 @@ SASL_PLAIN_PASSWORD=env.str("SASL_PLAIN_PASSWORD")
 ENABLE_AUTO_COMMIT=env.bool("ENABLE_AUTO_COMMIT")
 
 # Third party api key
-SENTRY_DSN = env.str("SENTRY_DSN")
 GOOGLE_API_KEY = env.str("GOOGLE_API_KEY")
 OPENAI_API_KEY = env.str("OPENAI_API_KEY")
 NER_API_KEY = env.str("NER_API_KEY")
