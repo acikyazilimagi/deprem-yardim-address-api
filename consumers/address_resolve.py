@@ -64,6 +64,7 @@ class AddressResolve(BaseKafkaClient):
                 zip(geocode_data.address.values, geocode_data.id.values))
 
         geocode_data = pd.DataFrame(geocode_data)
+        print(geocode_data.head())
         geocode_data = pd.merge(geocode_data[geocode_data.is_resolved == True],
                                 address_df_replica, on='id', how='left')
         del address_df_replica
