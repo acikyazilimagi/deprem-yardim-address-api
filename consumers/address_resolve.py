@@ -35,7 +35,7 @@ class AddressResolve(BaseKafkaClient):
         messageIo = BytesIO(message)
         address_df = pd.read_json(messageIo)
         address_df_replica = address_df.copy()
-
+        print(address_df.head())
         regex_results = pd.DataFrame(
             [address_api.regex_api_request(raw_text, entry_id) for
              raw_text, entry_id in
