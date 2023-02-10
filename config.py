@@ -6,7 +6,7 @@ env.read_env()
 
 # FASTAPI SETTINGS
 APP_HOST = env.str("APP_HOST", "0.0.0.0")
-APP_PORT = env.int("APP_HOST", 8000)
+APP_PORT = env.int("APP_PORT", 8000)
 
 # KAFKA SETTINGS
 CLIENT_ID = env.str("CLIENT_ID")
