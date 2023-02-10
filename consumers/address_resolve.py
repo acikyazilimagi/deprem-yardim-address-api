@@ -23,7 +23,8 @@ handler = logging.StreamHandler(sys.stdout)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 
-
+print(GOOGLE_API_KEY)
+print(OPENAI_API_KEY)
 address_api = AddressAPI(GOOGLE_API_KEY, OPENAI_API_KEY, NER_API_KEY)
 
 class AddressResolve(BaseKafkaClient):
