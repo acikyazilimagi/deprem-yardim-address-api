@@ -1,5 +1,4 @@
 import logging
-from sentry_sdk import capture_exception
 from models.conf import KafkaSettings, KafkaConsumerSettings
 import aiokafka
 
@@ -20,7 +19,7 @@ class BaseKafkaClient:
             await self.process_message(record)
         except Exception as exc:
             logging.error(exc)
-            capture_exception(exc)
+            logging.error(str(exc))
 
     async def process_message(self, record: aiokafka.ConsumerRecord):
         ...
@@ -34,7 +33,7 @@ class BaseKafkaClient:
                 try:
                     await self._process_message(record)
                 except Exception as exc:
-                    capture_exception(exc)
+                    logging.error(str(exc))
 
     async def run(self):
         self.running = True
