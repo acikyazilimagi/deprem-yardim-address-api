@@ -43,7 +43,7 @@ jobs:
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: task-definition-excel.json
+        task-definition: task-definition-excell.json
         container-name: container-name
         image: ${{ steps.build-image.outputs.image }}
 
@@ -51,6 +51,6 @@ jobs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: address-excel-service
+        service: address-excell-service
         cluster: base-cluster
         wait-for-service-stability: true
