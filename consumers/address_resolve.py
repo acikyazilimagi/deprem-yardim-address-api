@@ -31,64 +31,38 @@ class AddressResolve(BaseKafkaClient):
         message = [record.value]
 
         messageIo = BytesIO(message)
-        address_df = pd.read_json(messageIo)
-        address_df_replica = address_df.copy()
-        regex_results = pd.DataFrame(
-            [address_api.regex_api_request(raw_text, entry_id) for
-             raw_text, entry_id in
-             zip(address_df.raw_text.values, address_df.id.values)])
-        regex_to_geocode = regex_results[regex_results.ws >= 0.7]
-        del regex_results
+        row_data = orjson.loads(messageIo)
+        
+        regex_results = address_api.regex_api_request(row_data['raw_text'], row_data['id'])
+        if regex_results['ws'] >= 0.7:
+            geocode_results = address_api.google_geocode_api_request(row_data['raw_text'], row_data['id'])
+        else:
+            ner_results = address_api.ner_api_request(row_data['raw_text'], row_data['id'])
+            if ner_results['ws'] >= 0.5:
+                geocode_results = address_api.google_geocode_api_request(row_data['raw_text'], row_data['id'])
+            else:
+                # Ner veya Regex Çözümleyemedi. TO-Do: OpenAI eklenebilir.
+                pass
 
-        # Ner Process
-        address_df = address_df[~address_df.id.isin(regex_to_geocode.id.values)]
-        with ThreadPool(60) as executor:
-            ner_results = executor.map(
-                lambda p: address_api.ner_api_request(*p),
-                zip(address_df.raw_text.values,
-                    address_df.id.values))
-        ner_results = pd.DataFrame(ner_results)
-        ner_to_geocode = ner_results[ner_results.ws >= 0.5]
-        del ner_results
-
-        geocode_data = pd.concat([regex_to_geocode[['address', 'id']],
-                                  ner_to_geocode[['address', 'id']]], axis=0)
-        del regex_to_geocode, ner_to_geocode
-
-        with ThreadPool(60) as executor:
-            geocode_data = executor.map(
-                lambda p: address_api.google_geocode_api_request(*p),
-                zip(geocode_data.address.values, geocode_data.id.values))
-
-        geocode_data = pd.DataFrame(geocode_data)
-        geocode_data = pd.merge(geocode_data[geocode_data.is_resolved == True],
-                                address_df_replica, on='id', how='left')
-        del address_df_replica
-
-        final_data = []
-        for d in geocode_data.iterrows():
-            d = d[1]
-            final_data.append(
-                {
-                    'location': {
-                        "formatted_address": d.get('formatted_address', ''),
-                        "latitude": d.get('latitude', 0.0),
-                        "longitude": d.get('longitude', 0.0),
-                        "northeast_lat": d.get('northeast_lat', 0.0),
-                        "northeast_lng": d.get('northeast_lng', 0.0),
-                        "southwest_lat": d.get('southwest_lat', 0.0),
-                        "southwest_lng": d.get('southwest_lng', 0.0),
-                        "entry_id": d.get('id'),
-                        "epoch": d.get('epoch'),
-                        "channel": d.get('channel')},
-                    'feed': {
-                        "id": d.get('id'),
-                        "raw_text": d.get('raw_text'),
-                        "channel": d.get('channel'),
-                        "extra_parameters": d.get('extra_parameters', {}),
-                        "epoch": d.get('epoch')}
-                }
-            )
+        final_data = {
+         'location':{
+            "formatted_address": geocode_results.get('formatted_address', ''),
+            "latitude": geocode_results.get('latitude', 0.0),
+            "longitude": geocode_results.get('longitude', 0.0),
+            "northeast_lat": geocode_results.get('northeast_lat', 0.0),
+            "northeast_lng": geocode_results.get('northeast_lng', 0.0),
+            "southwest_lat": geocode_results.get('southwest_lat', 0.0),
+            "southwest_lng": geocode_results.get('southwest_lng', 0.0),
+            "entry_id": row_data.get('id'),
+            "epoch": row_data.get('epoch'),
+            "channel": row_data.get('channel')},
+          'feed': {
+            "id": row_data.get('id'),
+            "raw_text": row_data.get('raw_text'),
+            "channel": row_data.get('channel'),
+            "extra_parameters": row_data.get('extra_parameters', {}),
+            "epoch": row_data.get('epoch')}}
+    
 
         await self.producer.send_and_wait(KAFKA_PROCESSED_TOPIC,
                                           orjson.dumps(final_data))
