@@ -28,7 +28,7 @@
       "environment": [
         {
           "name": "KAFKA_ADDRESS_RESOLVE_TOPIC",
-          "value": "topic.raw.excell"
+          "value": "topic.raw.data-excell"
         }
       ],
       "resourceRequirements": null,
