@@ -1,4 +1,4 @@
-name: Deploy API
+name: Deploy ExceLL
 
 on:
   push:
@@ -51,6 +51,6 @@ jobs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: address-excell-service
+        service: address-data-excell-service
         cluster: base-cluster
         wait-for-service-stability: true
