@@ -23,20 +23,20 @@ class AddressAPI:
 
     def google_geocode_api_request(self, address_text: str, entry_id: int):
         result = self.google_api.request(address_text)
-        result['entry_id'] = entry_id
+        result['id'] = entry_id
         return result
 
     def regex_api_request(self, address_text: str, entry_id: int):
         result = self.regex_api.extract(address_text)
-        result['entry_id'] = entry_id
+        result['id'] = entry_id
         return result
 
     def ner_api_request(self, address_text: str, entry_id: int):
         result = self.ner_api.query(address_text)
-        result['entry_id'] = entry_id
+        result['id'] = entry_id
         return result
     
     def openai_api_request(self, address_text: str, entry_id: int):
         result = self.open_api.single_request(address_text)
-        result['entry_id'] = entry_id
+        result['id'] = entry_id
         return result
