@@ -25,7 +25,7 @@
       "command": [],
       "linuxParameters": null,
       "cpu": 512,
-      "environment": [{"name":"KAFKA_ADDRESS_RESOLVE_TOPIC","key":"topic.raw.twitter"}],
+      "environment": [{"name":"KAFKA_ADDRESS_RESOLVE_TOPIC","value":"topic.raw.twitter"}],
       "resourceRequirements": null,
       "ulimits": null,
       "dnsServers": null,
