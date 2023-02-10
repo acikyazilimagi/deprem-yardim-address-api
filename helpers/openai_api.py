@@ -1,9 +1,4 @@
-import requests
-from rest_framework import status
 from concurrent.futures import Future, ThreadPoolExecutor, as_completed
-import json
-
-import os
 import openai
 
 class OpenAI_API:

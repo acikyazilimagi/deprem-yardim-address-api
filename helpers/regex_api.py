@@ -1,9 +1,6 @@
 import re
 import unidecode
 import pandas as pd
-from tqdm.auto import tqdm
-from flashtext import KeywordProcessor
-import joblib
 import copy
 
 mahalle_list = ["mahallesi", "mah", "mh", "MAHALLELERİ"]
