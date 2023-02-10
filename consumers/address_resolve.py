@@ -23,8 +23,6 @@ handler = logging.StreamHandler(sys.stdout)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 
-print(GOOGLE_API_KEY)
-print(OPENAI_API_KEY)
 address_api = AddressAPI(GOOGLE_API_KEY, OPENAI_API_KEY, NER_API_KEY)
 
 class AddressResolve(BaseKafkaClient):
@@ -35,7 +33,6 @@ class AddressResolve(BaseKafkaClient):
         messageIo = BytesIO(message)
         address_df = pd.read_json(messageIo)
         address_df_replica = address_df.copy()
-        print(address_df.head())
         regex_results = pd.DataFrame(
             [address_api.regex_api_request(raw_text, entry_id) for
              raw_text, entry_id in
@@ -64,7 +61,6 @@ class AddressResolve(BaseKafkaClient):
                 zip(geocode_data.address.values, geocode_data.id.values))
 
         geocode_data = pd.DataFrame(geocode_data)
-        print(geocode_data.head())
         geocode_data = pd.merge(geocode_data[geocode_data.is_resolved == True],
                                 address_df_replica, on='id', how='left')
         del address_df_replica
