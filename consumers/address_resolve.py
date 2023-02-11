@@ -28,6 +28,8 @@ address_api = AddressAPI(GOOGLE_API_KEY, OPENAI_API_KEY, NER_API_KEY)
 class AddressResolve(BaseKafkaClient):
 
     async def process_message(self, record: aiokafka.ConsumerRecord):
+        logger.info(record.value)
+        print(record.value)
         message = record.value
 
         messageIo = BytesIO(message)
