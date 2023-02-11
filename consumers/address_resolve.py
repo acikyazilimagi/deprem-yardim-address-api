@@ -30,7 +30,7 @@ class AddressResolve(BaseKafkaClient):
     async def process_message(self, record: aiokafka.ConsumerRecord):
         message = record.value
         row_data = orjson.loads(message)
-        
+        logger.info("Message Received")
         regex_results = address_api.regex_api_request(row_data['raw_text'], row_data['id'])
         if regex_results['ws'] >= 0.7:
             geocode_results = address_api.google_geocode_api_request(row_data['raw_text'], row_data['id'])
