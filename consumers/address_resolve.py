@@ -28,11 +28,8 @@ address_api = AddressAPI(GOOGLE_API_KEY, OPENAI_API_KEY, NER_API_KEY)
 class AddressResolve(BaseKafkaClient):
 
     async def process_message(self, record: aiokafka.ConsumerRecord):
-        logger.info(record.value)
-        print(record.value)
         message = record.value
 
-        #messageIo = BytesIO(message)
         row_data = orjson.loads(message)
         
         regex_results = address_api.regex_api_request(row_data['raw_text'], row_data['id'])
@@ -47,6 +44,7 @@ class AddressResolve(BaseKafkaClient):
                 pass
 
         final_data = {
+         'correlation_id': row_data.get('id'),
          'location':{
             "formatted_address": geocode_results.get('formatted_address', ''),
             "latitude": geocode_results.get('latitude', 0.0),
@@ -55,11 +53,9 @@ class AddressResolve(BaseKafkaClient):
             "northeast_lng": geocode_results.get('northeast_lng', 0.0),
             "southwest_lat": geocode_results.get('southwest_lat', 0.0),
             "southwest_lng": geocode_results.get('southwest_lng', 0.0),
-            "entry_id": row_data.get('id'),
             "epoch": row_data.get('epoch'),
             "channel": row_data.get('channel')},
           'feed': {
-            "id": row_data.get('id'),
             "raw_text": row_data.get('raw_text'),
             "channel": row_data.get('channel'),
             "extra_parameters": row_data.get('extra_parameters', {}),
