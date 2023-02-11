@@ -54,8 +54,10 @@ class AddressResolve(BaseKafkaClient):
             "southwest_lat": geocode_results.get('southwest_lat', 0.0),
             "southwest_lng": geocode_results.get('southwest_lng', 0.0),
             "epoch": row_data.get('epoch'),
+            "entry_id": 0,
             "channel": row_data.get('channel')},
           'feed': {
+            "entry_id": 0,
             "raw_text": row_data.get('raw_text'),
             "channel": row_data.get('channel'),
             "extra_parameters": row_data.get('extra_parameters', {}),
