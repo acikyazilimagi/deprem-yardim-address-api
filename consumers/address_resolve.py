@@ -42,28 +42,54 @@ class AddressResolve(BaseKafkaClient):
             else:
                 # Ner veya Regex Çözümleyemedi. TO-Do: OpenAI eklenebilir.
                 pass
-
-        final_data = {
-         'correlation_id': row_data.get('id'),
-         'location':{
-            "formatted_address": geocode_results.get('formatted_address', ''),
-            "latitude": geocode_results.get('latitude', 0.0),
-            "longitude": geocode_results.get('longitude', 0.0),
-            "northeast_lat": geocode_results.get('northeast_lat', 0.0),
-            "northeast_lng": geocode_results.get('northeast_lng', 0.0),
-            "southwest_lat": geocode_results.get('southwest_lat', 0.0),
-            "southwest_lng": geocode_results.get('southwest_lng', 0.0),
-            "epoch": row_data.get('epoch'),
-            "entry_id": 0,
-            "channel": row_data.get('channel')},
-          'feed': {
-            "entry_id": 0,
-            "raw_text": row_data.get('raw_text'),
-            "channel": row_data.get('channel'),
-            "extra_parameters": row_data.get('extra_parameters', {}),
-            "epoch": row_data.get('epoch')}}
-    
-
-        await self.producer.send_and_wait(KAFKA_PROCESSED_TOPIC,
+        
+        if regex_results['ws'] >= 0.7:
+            final_data = {
+             'correlation_id': row_data.get('id'),
+             'location':{
+                "formatted_address": geocode_results.get('formatted_address', ''),
+                "latitude": geocode_results.get('latitude', 0.0),
+                "longitude": geocode_results.get('longitude', 0.0),
+                "northeast_lat": geocode_results.get('northeast_lat', 0.0),
+                "northeast_lng": geocode_results.get('northeast_lng', 0.0),
+                "southwest_lat": geocode_results.get('southwest_lat', 0.0),
+                "southwest_lng": geocode_results.get('southwest_lng', 0.0),
+                "epoch": row_data.get('epoch'),
+                "entry_id": 0,
+                "channel": row_data.get('channel')},
+              'feed': {
+                "entry_id": 0,
+                "raw_text": row_data.get('raw_text'),
+                "channel": row_data.get('channel'),
+                "extra_parameters": row_data.get('extra_parameters', {}),
+                "epoch": row_data.get('epoch')}}
+            
+            logger.info(final_data)
+            await self.producer.send_and_wait(KAFKA_PROCESSED_TOPIC,
                                           orjson.dumps(final_data))
-        logger.info("Message Processed.")
+            logger.info("Message Processed.")
+        elif ner_results['ws'] >= 0.5:
+            final_data = {
+             'correlation_id': row_data.get('id'),
+             'location':{
+                "formatted_address": geocode_results.get('formatted_address', ''),
+                "latitude": geocode_results.get('latitude', 0.0),
+                "longitude": geocode_results.get('longitude', 0.0),
+                "northeast_lat": geocode_results.get('northeast_lat', 0.0),
+                "northeast_lng": geocode_results.get('northeast_lng', 0.0),
+                "southwest_lat": geocode_results.get('southwest_lat', 0.0),
+                "southwest_lng": geocode_results.get('southwest_lng', 0.0),
+                "epoch": row_data.get('epoch'),
+                "entry_id": 0,
+                "channel": row_data.get('channel')},
+              'feed': {
+                "entry_id": 0,
+                "raw_text": row_data.get('raw_text'),
+                "channel": row_data.get('channel'),
+                "extra_parameters": row_data.get('extra_parameters', {}),
+                "epoch": row_data.get('epoch')}}
+            
+            logger.info(final_data)
+            await self.producer.send_and_wait(KAFKA_PROCESSED_TOPIC,
+                                          orjson.dumps(final_data))
+            logger.info("Message Processed.")
