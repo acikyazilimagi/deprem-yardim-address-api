@@ -63,7 +63,6 @@ class AddressResolve(BaseKafkaClient):
                 "extra_parameters": row_data.get('extra_parameters', {}),
                 "epoch": row_data.get('epoch')}}
 
-            logger.info(final_data)
             if final_data['location']['longitude'] > 0 or final_data['location']['latitude'] > 0:
                 await self.producer.send_and_wait(KAFKA_PROCESSED_TOPIC, orjson.dumps(final_data))
             logger.info("Message Processed.")
@@ -90,7 +89,6 @@ class AddressResolve(BaseKafkaClient):
                 "extra_parameters": row_data.get('extra_parameters', {}),
                 "epoch": row_data.get('epoch')}}
         
-            logger.info(final_data)
             if final_data['location']['longitude'] > 0 or final_data['location']['latitude'] > 0:
                 await self.producer.send_and_wait(KAFKA_PROCESSED_TOPIC, orjson.dumps(final_data))
             logger.info("Message Processed.")
