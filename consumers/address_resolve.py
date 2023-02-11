@@ -32,8 +32,8 @@ class AddressResolve(BaseKafkaClient):
         print(record.value)
         message = record.value
 
-        messageIo = BytesIO(message)
-        row_data = orjson.loads(messageIo)
+        #messageIo = BytesIO(message)
+        row_data = orjson.loads(message)
         
         regex_results = address_api.regex_api_request(row_data['raw_text'], row_data['id'])
         if regex_results['ws'] >= 0.7:
