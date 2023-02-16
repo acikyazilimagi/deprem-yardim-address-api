@@ -13,7 +13,7 @@ Eğer Regex'ten gelen ws değeri 0.7'den küçükse free text halindeki metin Hu
 Fonksiyonların örnek kullanımları ve çıktıları aşağıda yer almaktadır. 
 
 ## Afetharita.com'da Address Resolver
-<img src="address-resolver-on-afetharita" width=600 height=400>
+<img src="address-resolver-on-afetharita.png" width=600 height=400>
 
 
 Afetharita.com projesinde ise address-resolver yapısı şu şekilde kurgulanmıştır;
