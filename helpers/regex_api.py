@@ -6,7 +6,7 @@ import copy
 mahalle_list = ["mahallesi", "mah", "mh", "MAHALLELERİ"]
 sokak_list = ['sokağı', 'sokagi', 'caddesi', 'sokak', 'cadde', "bulvar", "bulvarı", "bulvari", "blvd", "yol", "yolu", 'sk', 'cd', "sok", "cad"]
 site_list = ['sitesi', "siteleri", 'evleri', "konut", "konutları", "konutlari", "kooperatif", "kent", 'site', "home", "qpt", "spt", "köyü", "koyu", "koy"]
-apartman_list = ['apartmanı', 'apartmani', "aprtman", "rezidans", 'evi', 'apt', "aprt", 'bina', 'binası', "binasi", "karşısı", "karsisi"]
+apartman_list = ['apartmanı', 'apartmani', "aprtman", "rezidans", 'evi', 'apt', "aprt", 'bina', 'binası', "binasi", "karşısı", "karsisi", "tower", "residence", "city", "kule", "kulesi", "kuleleri"]
 blok_list = ['blok', 'etap']
 kisim_list = ['kisim', 'kısım']
 
