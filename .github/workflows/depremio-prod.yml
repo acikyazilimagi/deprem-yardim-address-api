@@ -1,4 +1,4 @@
-name: Deploy API
+name: Deploy DepremIO
 
 on:
   push:
